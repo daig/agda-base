@@ -1,4 +1,4 @@
-{-# OPTIONS --cubical --prop --no-import-sorts #-}
+{-# OPTIONS --without-K #-}
 module Iso where
 open import Type
 open import Eq hiding (sym)

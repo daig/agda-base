@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --safe --without-K #-}
 -- https://hott-uf.github.io/2017/abstracts/twoleveltt.pdf
 module Type where
 open import Agda.Primitive public
