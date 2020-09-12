@@ -10,6 +10,7 @@ open Vars
 flip : ((x : A) (y : B) → C′ x y) → ((y : B) (x : A) → C′ x y)
 flip f = λ y x → f x y
 
+infixr 0 _$_
 _$_ : ((x : A) → B′ x) → ((x : A) → B′ x)
 f $ x = f x
 
@@ -31,3 +32,4 @@ A ∋ x = x
 
 typeOf : {A : Type ℓa} → A → Type ℓa
 typeOf {A = A} _ = A
+
