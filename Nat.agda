@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --cubical --safe #-}
 module Nat where
 open import Bool
 
@@ -43,3 +43,21 @@ z  < s _ = true
 s n < s m = n < m
 
 {-# BUILTIN NATLESS _<_ #-}
+
+module Nat where
+    module Reasoning where
+      open import Cubical.Eq
+      +assoc : (a b c : ℕ) → (a + b) + c ≡ a + (b + c)
+      +assoc z b c = ✓
+      +assoc (s a) b c =  s ⟨$⟩ (+assoc a b c)
+      +0 : (a : ℕ) → a + z ≡ a
+      +0 z = ✓
+      +0 (s a) = s ⟨$⟩ +0 a
+      +s : (a b : ℕ) → a + s b ≡ s (a + b)
+      +s z b = ✓
+      +s (s a) b = s ⟨$⟩ +s a b
+      +comm : (a b : ℕ) → a + b ≡ b + a
+      +comm z b = sym ( +0 b)
+      +comm (s a) b = s a + b
+        ≡⟨ s ⟨$⟩ +comm a b ⟩ s (b + a)
+        ≡⟨ sym (+s b a) ⟩ b + s a ∎
