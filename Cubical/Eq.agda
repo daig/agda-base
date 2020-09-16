@@ -1,14 +1,9 @@
-{-# OPTIONS --cubical --safe #-}
+{-# OPTIONS --cubical #-}
 module Cubical.Eq where
 open import Cubical.Core
 open import Cubical.Core public using (_≡_)
 
-private
-  variable
-    ℓ ℓa ℓb ℓc : Level
-    A : Type ℓa
-    B : Type ℓb
-    a b x y : A
+private variable a b x y : A
 
 refl ✓ : x ≡ x
 refl {x = x} _ = x

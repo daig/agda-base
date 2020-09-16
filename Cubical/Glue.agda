@@ -7,16 +7,6 @@ open import Cubical.Equiv
 open import Iso
 
 
-private _∙_ = trans
-
-private
-  variable
-    ℓ ℓa ℓb ℓc : Level
-
-isContr→isProp : {A : Type ℓ} → contractible A → (x y : A) → x ≡ y
-isContr→isProp (x , p) a b i =
-    hcomp (λ j → λ { (i = i0) → p a j
-                    ; (i = i1) → p b j }) x
 
 
 private
@@ -46,6 +36,11 @@ private
             {e : [ φ ⊩ (λ o → T o ≃ A) ]} → primGlue A T e → A
     unglue φ {e = e} = prim^unglue {φ = φ}
 open Prim public using (Glue ; unglue) renaming (prim^glue to glue)
+
+isContr→isProp : {A : Type ℓ} → contractible A → (x y : A) → x ≡ y
+isContr→isProp (x , p) a b i =
+    hcomp (λ j → λ { (i = i0) → p a j
+                    ; (i = i1) → p b j }) x
 
 module _ {ℓ : I → Level} (P : (i : I) → Type (ℓ i)) where
   private
