@@ -1,13 +1,10 @@
-{-# OPTIONS --cubical #-}
+{-# OPTIONS --cubical --safe #-}
 module Cubical.Equiv where
 open import Type
 open import Sigma
-open import Cubical.Eq
+open import Eq
 open import Cubical.Core
 open import Iso
-private
-  variable
-    ℓ ℓa ℓb ℓc : Level
 
 
 fiber [_]↣_ : {A : Type ℓa} {B : Type ℓb} (f : A → B) (y : B) → Type (ℓa ⊔ ℓb)

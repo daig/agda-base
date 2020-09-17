@@ -1,18 +1,11 @@
-{-# OPTIONS --cubical #-}
+{-# OPTIONS --cubical --safe #-}
 module Iso where
 open import Type
-open import Cubical.Eq hiding (sym)
-open Cubical.Eq.Reasoning
-
-private
-  variable
-    ℓa ℓb ℓc : Level
-    A : Type ℓa
-    B : Type ℓb
-    C : Type ℓc
-
+open import Eq hiding (sym)
+open Eq.Reasoning
 
 record _≅_ (A : Type ℓa) (B : Type ℓb) : Type (ℓa ⊔ ℓb) where
+  constructor iso
   field
       to : A → B
       from : B → A

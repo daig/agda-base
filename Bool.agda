@@ -1,6 +1,6 @@
 {-# OPTIONS --cubical --safe #-}
 module Bool where
-open import Cubical.Eq
+open import Eq
 
 data 𝔹 : Set where false true : 𝔹
 

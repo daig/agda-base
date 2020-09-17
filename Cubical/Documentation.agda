@@ -103,3 +103,53 @@ module Kan where
 -- comp : ∀ {ℓ} (A : ∀ i → Type (ℓ i)) {φ} (u : ∀ i → [ φ ⊢ A i ] ) (a : A i0) → A i1
 -- Note: this is not recommended to use, instead use the CHM primitives! (below)
 -- The reason is that these work with HITs and produce fewer empty systems.
+
+{-
+    j
+    ↑
+    |
+    ∙--→ i
+
+          x≡y
+      x ---------- y
+      ∥            |
+      ∥  x≡y(i∧j)  | x≡y
+      ∥            |
+      ∥            |
+      x============x
+
+
+      y ========== y
+      |            ∥ 
+      |  x≡y(i∨j)  ∥
+  x≡y |            ∥  
+      |            ∥
+      x------------y
+           x≡y
+
+      y ========== y
+      |            ∥ 
+      |  x≡y(i∨j)  ∥     
+  x≡y |            ∥  sym x≡y (i ∧ j) := x≡y(~ (i ∧ j)) ; x≡y(~ i ∨ ~ j)
+      |            ∥
+      x------------y
+           x≡y
+
+         x ========== x
+         |            ∥ 
+         |  x≈y(i∨j)  ∥
+sym x≡y  |            ∥  sym x≡y (i ∨ j) := x≡y(~ (i∨j)) ; x≡y(~ i ∧ ~ j)
+         |            ∥
+         y------------x
+             sym x≡y
+
+
+
+             sym x≡y
+         y ---------- x
+         |            ∥ 
+         |  x≡y(~i∨j) ∥
+    x≡y  |            ∥  
+         |            ∥
+         x============x
+-}

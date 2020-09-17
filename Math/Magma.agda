@@ -1,15 +1,12 @@
-{-# OPTIONS --cubical #-}
+{-# OPTIONS --cubical --safe #-}
 module Math.Magma where
-open import Cubical.Eq
+open import Eq
+open import Cubical.HLevel
 open import Type
 open import Nat
 open Nat.Reasoning
 open import Cubical.Core
 
-_∙_ = trans
-
-
-variable ℓ ℓa ℓb : Level
 
 module Group (A : Type ℓ) (_∙_ : A → A → A) where
   record group? : Type ℓ where
@@ -50,14 +47,6 @@ funExtPath : {A : Type ℓa} {B : A → I → Type ℓb} {f : (x : A) → B x i0
           → (∀ x → B x [ f x ≡ g x ]) ≡ ((λ i → ∀ x → B x i) [ f ≡ g ])
 funExtPath = {!!}
 
-hlvlΠ : {A : Type ℓa} {B : A → Type ℓb}
-      → ∀ n → ((x : A) → hlvl? n (B x))
-            → hlvl? n ((x : A) → B x)
-hlvlΠ 0 h = (λ x → π₁ (h x)) , λ f i a → π₂ (h a) (f a) i
-hlvlΠ 1 h f g i x = h x (f x) (g x) i
-hlvlΠ {A = A} (s (s n)) h f g = {!!} where
-  go : hlvl? (s n) ((x : A) → f x ≡ g x)
-  go = hlvlΠ (s n) \ x → h x (f x) (g x)
 -- contr? A = ∃ \ (x : A) → ∀ y → x ≡ y
 
 

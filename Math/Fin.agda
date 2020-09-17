@@ -1,7 +1,8 @@
-module Fin where
+{-# OPTIONS --cubical --safe #-}
+module Math.Fin where
 open import Nat
 open import Type
-open import Eq
+open import Cubical.Eq
 
 data Fin : (n : ℕ) → Type where
   fz : ∀ {n} → Fin (s n)
