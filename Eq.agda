@@ -9,7 +9,7 @@ refl ✓ : x ≡ x
 refl {x = x} _ = x
 ✓ = refl; {-# INLINE ✓ #-}
 
-cong _⟨$⟩_ : (f : A → B) → x ≡ y → f x ≡ f y
+cong _⟨$⟩_ : (f : (a : A) → B′ a) → (x≡y : x ≡ y) → (λ i → B′ (x≡y i)) [ f x ≡ f y ]
 cong f x≡y i = f (x≡y i)
 _⟨$⟩_ = cong
 _⟨&⟩_ : x ≡ y → (f : A → B) → f x ≡ f y
@@ -51,8 +51,8 @@ subst P x≡y p = transport (λ i → P (x≡y i)) p
 -- https://homotopytypetheory.org/2011/04/10/just-kidding-understanding-identity-elimination-in-homotopy-type-theory/
 J : {a : A} (P : (x : A) → a ≡ x → Type ℓ)
      (r : P a ✓)
-     {b : A} (p : a ≡ b)
- → P b p
+     {b : A} (a≡b : a ≡ b)
+ → P b a≡b
 J P r a≡b = transp (λ i → P (a≡b i)  λ j → a≡b (j ∧ i)) i0 r
 
 
@@ -131,3 +131,8 @@ doubleCompPath-filler w≡x x≡y y≡z j i
    `x≡y ∙ y≡z` gives the line at the top,
    `compPath-filler x≡y y≡z` gives the whole square
 -}
+module Eq where
+    module _ {B : A → I → Type ℓb} {f : (x : A) → B x i0} {g : (x : A) → B x i1} where
+        Π : (      (x : A) → (B x ) [ f x ≡ g x ] )
+          → (λ i → (x : A) → B x i) [ f   ≡ g   ]
+        Π fx≡gx i x = fx≡gx x i

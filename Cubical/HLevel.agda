@@ -14,8 +14,26 @@ h? 0 A = ∃ \ (x : A) → ∀ y → x ≡ y
 h? 1 A = (x y : A) → x ≡ y
 h? (s (s n)) A = (x y : A) → h? (s n) (x ≡ y)
 
-hfun? : (n : ℕ) (f : A → B) → Type _
-hfun? n f = ∀ b → h? n ([ f ]↣ b)
+h?′ : ℕ → (B′ : A → Type ℓb) → Type _
+h?′ {A = A} 0 B′ = {a : A} → Σ (B′ a) \ b → ({a' : A} → (b' : B′ a') (p : a ≡ a') → (λ i → B′ (p i)) [ b ≡ b' ])
+h?′ {A = A} 1 B′ = {a₀ a₁ : A} (b₀ : B′ a₀) (b₁ : B′ a₁) (p : a₀ ≡ a₁) → (λ i → B′ (p i)) [ b₀ ≡ b₁ ]
+h?′ {A = A} (s (s n)) B′ = {a₀ a₁ : A} (b₀ : B′ a₀) (b₁ : B′ a₁)
+  → h?′ {A = a₀ ≡ a₁} (s n) (λ p → (λ i → B′ (p i)) [ b₀ ≡ b₁ ])
+
+-- transport : A ≡ B → A → B
+-- transport p a = transp (λ i → p i) i0 a
+
+module _ {⊢A : I → Type ℓ} {x : ⊢A i0} {y : ⊢A i1} where
+    open import Iso
+    transp→≡ : transp ⊢A i0 x ≡ y → ⊢A [ x ≡ y ]
+    transp→≡ p i = hcomp (λ {j (i = i0) → x
+                       ;j (i = i1) → p j})
+                    (transp (λ j → ⊢A (i ∧ j)) (~ i) x)
+    ≡→transp : ⊢A [ x ≡ y ] → transp ⊢A i0 x ≡ y
+    ≡→transp x≡y i = transp (λ j → ⊢A (i ∨ j)) i (x≡y i)
+    -- ⊢≅≡ : (transp ⊢A i0 x ≡ y) ≅ (⊢A [ x ≡ y ])
+    -- ⊢≅≡ = iso ⊢→≡ ≡→⊢ {!!} {!!} where
+
 
 contr? prop? set? groupoid? 2groupoid? : Type ℓ → Type ℓ
 contr?     = h? 0
@@ -80,16 +98,35 @@ module HLevel where
     prop 1 f g i a b = suc 1 f a b (f a b) (g a b) i
     prop (s (s n)) f g i a b = prop (s n) (f a b) (g a b) i
 
-module Prop where
+module HProp where
     Π : ((x : A) → prop? (B′ x))
       → prop? ((x : A) → B′ x)
     Π = HLevel.Π 1
     ⦃Π⦄ : ((x : A) → prop? (B′ x))
         → prop? ({x : A} → B′ x)
     ⦃Π⦄ h f g i {x} = h x (f {x}) (g {x}) i
-module Set where
+module HSet where
     Π : ((x : A) → set? (B′ x))
       → set? ((x : A) → B′ x)
     Π = HLevel.Π 2
     prop : prop? (set? A)
-    prop = {!HLevel.prop!}
+    prop = HLevel.prop 2
+
+-- Essential consequences of isProp and isContr
+⊢prop→≡ : ((i : I) → prop? (⊢B i))
+       → (b0 : ⊢B i0) (b1 : ⊢B i1)
+       → ⊢B [ b0 ≡ b1 ]
+⊢prop→≡ {⊢B = ⊢B} ⊢h b0 b1 = transp→≡ (⊢h i1 (transp ⊢B i0 b0) b1)
+                    
+
+h?→h?′ : (n : ℕ) (h : (a : A) → h? n (B′ a)) → h?′ {A = A} n B′
+h?→h?′ 0 h {a} = (π₁ (h a)) , λ b' p → ⊢prop→≡ (λ i → HLevel.suc 0 (h (p i))) (h a .π₁) b'
+h?→h?′ 1 h = λ b₀ b₁ p → ⊢prop→≡ (λ i → h (p i)) b₀ b₁
+h?→h?′ {A = A} {B′ = B′} (s (s n)) h {a₀} {a₁} b₀ b₁ = h?→h?′ (s n) (helper a₁ b₁)
+  where helper : (a₁ : A) (b₁ : B′ a₁) (p : a₀ ≡ a₁ )
+               → h? (s n) ((λ i → B′ (p i)) [ b₀ ≡ b₁ ])
+        helper a₁ b₁ a₀≡a₁
+          = J (λ a₁ a₀≡a₁ → ∀ b₁ → h? (s n) ((λ i → B′ (a₀≡a₁ i)) [ b₀ ≡ b₁ ]))
+                        (λ _ → h _ _ _)  a₀≡a₁ b₁
+hfun? : (n : ℕ) (f : A → B) → Type _
+hfun? n f = ∀ b → h? n ([ f ]↣ b)
