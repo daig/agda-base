@@ -2,8 +2,8 @@
 module Fun where
 open import Type
 
-ι : A → A
-ι x = x
+id : A → A
+id x = x
 
 flip : ((x : A) (y : B) → C′ x y) → ((y : B) (x : A) → C′ x y)
 flip f = λ y x → f x y

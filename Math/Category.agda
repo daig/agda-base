@@ -1,34 +1,37 @@
-{-# OPTIONS --without-K #-}
-module Math.category where
-open import Eq hiding (_∙_)
+{-# OPTIONS --cubical #-}
+module Math.Category where
+open import Eq
 open import Type
-open Vars using (ℓ; ℓa; ℓb)
 open import Sigma
 
 open import Int
 
 
-record Cat ℓ : Set (ℓs ℓ) where
+record Cat : Set (ℓs (ℓ ⊔ ℓ')) where
   field
     Obj : Set ℓ
-    Hom : Obj → Obj → Set ℓ
+    Hom : Obj → Obj → Set ℓ'
   private _⇒_ = Hom
   field
-    id : (x : Obj) → x ⇒ x
+    id : {x : Obj} → x ⇒ x
     o : {x y z : Obj} → y ⇒ z → x ⇒ y → x ⇒ z
   private _∘_ = o
   field
-    idL : {x y : Obj} (f : Hom x y) → id y ∘ f ≡ f
-    idR : {x y : Obj} (f : Hom x y) → f ∘ id x ≡ f
-    assoc : {a b c d : Obj} (f : a ⇒ b) (g : b ⇒ c) (h : c ⇒ d)
-      → h ∘ (g ∘ f) ≡ (h ∘ g) ∘ f
-open Cat using (Obj; Hom)
-
--- module Cats (𝒞 : Cat ℓa) (𝒟 : Cat ℓb) where
-
-
-
-
+    idL : {x y : Obj} (f : Hom x y) → id ∘ f ≡ f
+    idR : {x y : Obj} (f : Hom x y) → f ∘ id ≡ f
+    assoc : {a b c d : Obj} (f : c ⇒ d) (g : b ⇒ c) (h : a ⇒ b)
+      → (f ∘ g) ∘ h ≡ f ∘ (g ∘ h)
+  record _≅_ (x y : Obj) : Type ℓ' where
+    constructor iso
+    field
+      to : x ⇒ y
+      from : y ⇒ x
+      ⁻L : from ∘ to ≡ id
+      ⁻R : to ∘ from ≡ id
+  ι : {x : Obj} → x ≅ x
+  ι = iso id id (idL id) (idR id)
+  idToIso : (a b : Obj) → a ≡ b → a ≅ b
+  idToIso a b a≡b = subst (λ x → a ≅ x) a≡b ι
 
 -- -- module Product (𝒞 : Cat ℓ1) (𝒟 : Cat ℓ2) where
 -- --     ⊗Obj = Obj 𝒞 × Obj 𝒟

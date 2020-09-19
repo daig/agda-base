@@ -21,7 +21,7 @@ infixl 6 _⊔_
 -}
 
 variable
-    ℓ ℓa ℓb ℓc ℓd ℓe ℓf ℓh : Level
+    ℓ ℓ' ℓa ℓb ℓc ℓd ℓe ℓf ℓh : Level
     A : Type ℓa
     B : Type ℓb
     B′ : A → Type ℓb

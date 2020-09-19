@@ -4,6 +4,8 @@ open import Type
 open import Eq hiding (sym)
 open Eq.Reasoning
 
+private variable A : Type ℓa; B : Type ℓb; C : Type ℓc
+
 record _≅_ (A : Type ℓa) (B : Type ℓb) : Type (ℓa ⊔ ℓb) where
   constructor iso
   field

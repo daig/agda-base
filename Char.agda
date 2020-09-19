@@ -1,4 +1,4 @@
-{-# OPTIONS --without-K #-}
+{-# OPTIONS --cubical #-}
 module Char where
 open import Nat
 open import Bool

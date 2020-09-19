@@ -1,9 +1,9 @@
-module functor where
-open import Eq hiding (_∙_)
-open import Type
-open Vars using (ℓ; ℓa; ℓb; ℓc)
+{-# OPTIONS --cubical #-}
+module Math.Category.Functor where
+open import Eq 
+open import Type hiding (A; B; C; D; E)
 open import Sigma
-open import category
+open import Math.Category
 
 open import Int
 
@@ -56,7 +56,7 @@ module o-laws {𝒞 𝒟 : Cat ℓ} (ℱ : Functor 𝒞 𝒟) where
     idL-map : ∀ {x y} → o.map (id 𝒟) ℱ {x} {y} ≡ F₁
     idL-map = ✓
     idL-map𝒾 : o.map𝒾 (id 𝒟) ℱ ≡ F𝒾
-    idL-map𝒾 = funExt go where
+    idL-map𝒾 = Eq.Π go where
         go : ∀ x → o.map𝒾 (id 𝒟) ℱ x ≡ F𝒾 x
         go x rewrite F𝒾 x = ✓
 
