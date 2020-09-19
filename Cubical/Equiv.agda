@@ -2,7 +2,6 @@
 module Cubical.Equiv where
 open import Type
 open import Sigma
-open import Eq
 open import Cubical.Core
 open import Iso
 
@@ -39,8 +38,8 @@ module Equiv where
 
     module id where
         equiv : (A : Type ℓ) → Prim.equiv (λ x → x)
-        Prim.equiv.proof (equiv A) y = ( y , ✓ ) ,  contract where
-            contract : (y⁻¹ : Σ A (λ x → x ≡ y)) → (y , ✓) ≡ y⁻¹
+        Prim.equiv.proof (equiv A) y = ( y , λ _ → y ) ,  contract where
+            contract : (y⁻¹ : Σ A (λ x → x ≡ y)) → (y , λ _ → y) ≡ y⁻¹
             contract (x , idx≡y ) i   = idx≡y (~ i) , λ j → idx≡y (~ i ∨ j)
     id : (A : Type ℓ) → A Prim.≃ A
     id A = (λ x → x) , id.equiv A
@@ -80,7 +79,7 @@ module Equiv where
             ✓≡f⁻¹∘fx : (λ φ → f⁻¹ (fx≡y (~ φ)) ≡ hcomp (λ {j (φ = i0) → f⁻¹ y
                                                             ;j (φ = i1) → f⁻¹∘f x j})
                                                     (f⁻¹ (fx≡y (~ φ))))
-                    [ ✓ {x = f⁻¹ y} ≡ f⁻¹∘f x ]
+                    [ (λ _ → f⁻¹ y) ≡ f⁻¹∘f x ]
             ✓≡f⁻¹∘fx φ = hfill (λ k → λ { (φ = i0) → f⁻¹ y
                                         ; (φ = i1) → f⁻¹∘f x k})
                                 (↦ f⁻¹ (fx≡y (~ φ)))
@@ -96,7 +95,7 @@ module Equiv where
             ✓≡f⁻¹∘fx′ : (λ φ → f⁻¹ (fx′≡y (~ φ)) ≡ hcomp (λ {j (φ = i0) → f⁻¹ y
                                                             ;j (φ = i1) → f⁻¹∘f x′ j})
                                                         (f⁻¹ (fx′≡y (~ φ))))
-                    [ ✓ {x = f⁻¹ y} ≡ f⁻¹∘f x′ ]
+                    [ (λ _ → f⁻¹ y) ≡ f⁻¹∘f x′ ]
             ✓≡f⁻¹∘fx′ zz i = hcomp {φ = ~ i ∨ ~ zz ∨ zz}
                                 (λ {j (i = i0) → f⁻¹ (fx′≡y (~ zz))
                                     ;j (zz = i0) → f⁻¹ y

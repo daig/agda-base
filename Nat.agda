@@ -2,10 +2,8 @@
 module Nat where
 open import Bool
 
-module _Data where
-    data ℕ : Set where z : ℕ; s : ℕ → ℕ
-    {-# BUILTIN NATURAL ℕ #-}
-open _Data public hiding (z)
+data ℕ : Set where zero : ℕ; s : ℕ → ℕ
+{-# BUILTIN NATURAL ℕ #-}
 
 
 
@@ -47,7 +45,6 @@ s n < s m = n < m
 {-# BUILTIN NATLESS _<_ #-}
 
 module Nat where
-    open _Data public
     module Reasoning where
       open import Eq
       +assoc : (a b c : ℕ) → (a + b) + c ≡ a + (b + c)

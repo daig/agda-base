@@ -13,7 +13,6 @@ record _≅_ (A : Type ℓa) (B : Type ℓb) : Type (ℓa ⊔ ℓb) where
       from∘to : ∀ x → from (to x) ≡ x
 module Iso where
     open _≅_ public
-
     id : A ≅ A
     to id x = x
     from id x = x

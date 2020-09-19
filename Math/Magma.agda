@@ -6,6 +6,7 @@ open import Type
 open import Nat
 open Nat.Reasoning
 open import Cubical.Core
+open import Fun.Extensionality
 
 
 module Group (A : Type ℓ) (_∙_ : A → A → A) where
@@ -30,31 +31,52 @@ data ℤ : Type where
   ℤ≡ : (a⁺ a⁻ b⁺ b⁻ : ℕ) → (a⁺ + b⁻ ≡ b⁺ + a⁻) → [ a⁺ , a⁻ ] ≡ [ b⁺ , b⁻ ]
   trunc : (a b : ℤ) (p q : a ≡ b) → p ≡ q
 
-rec : (f : ℕ → ℕ → ℤ) (feq : (a⁺ a⁻ b⁺ b⁻ : ℕ)
-                             (a≡b : a⁺ + b⁻ ≡ b⁺ + a⁻)
-                           → f a⁺ a⁻ ≡ f b⁺ b⁻)
+ℤelim : ((n : ℤ) → prop? (B′ n))
+      → ((a⁺ a⁻ : ℕ) → B′ ([ a⁺ , a⁻ ]))
+      → (n : ℤ) → B′ n
+ℤelim Bprop f [ a⁺ , a⁻ ] = f a⁺ a⁻
+ℤelim {B′ = B′} Bprop  f (ℤ≡ a⁺ a⁻ b⁺ b⁻ r i)
+  = J (λ y n≡m → ∀ bn bm → (λ i → B′ (n≡m i)) [ bn ≡ bm ])
+      (λ bn bm → Bprop [ a⁺ , a⁻ ] bn bm)
+      (ℤ≡ a⁺ a⁻ b⁺ b⁻ r) (f a⁺ a⁻) (f b⁺ b⁻) i
+ℤelim Bprop f (trunc n m p q i j)
+  = h?→h?′ 2 (λ x → HLevel.suc 1 (Bprop x))
+             (g n) (g m) (λ k → g (p k)) (λ k → g (q k))
+             (trunc n m p q) i j
+  where g = ℤelim Bprop f
+ℤrec : (f : ℕ → ℕ → ℤ) (feq : (a⁺ a⁻ b⁺ b⁻ : ℕ)
+                              (a≡b : a⁺ + b⁻ ≡ b⁺ + a⁻)
+                            → f a⁺ a⁻ ≡ f b⁺ b⁻)
     → ℤ → ℤ
-rec f feq [ n⁺ , n⁻ ] = f n⁺ n⁻
-rec f feq (ℤ≡ a⁺ a⁻ b⁺ b⁻ a≡b i) =  feq a⁺ a⁻ b⁺ b⁻ a≡b i 
-rec f feq (trunc a b p q i j) = trunc (g a) (g b) (cong g p) (cong g q) i j where g = rec f feq
+ℤrec f _ [ n⁺ , n⁻ ] = f n⁺ n⁻
+ℤrec f feq (ℤ≡ a⁺ a⁻ b⁺ b⁻ a≡b i) =  feq a⁺ a⁻ b⁺ b⁻ a≡b i 
+ℤrec f feq (trunc a b p q i j) = trunc (g a) (g b) (cong g p) (cong g q) i j where g = ℤrec f feq
 -- rec2 : {A : Type ℓa} {B : Type ℓb} (Bset : (a b : B) (p q : a ≡ b) → p ≡ q)
 --        (f : A → A → B) (feq1 : (a b c : A) (r : R a b) → f a c ≡ f b c)
 --                        (feqr : (a b c : A) (r : R b c) → f a b ≡ f a c)
 --     → A / R → A ‌/ R → B
 
-funExtPath : {A : Type ℓa} {B : A → I → Type ℓb} {f : (x : A) → B x i0} {g : (x : A) → B x i1}
--- funExtPath : {A : Type ℓa} {B : A → I → Type ℓb} {f : (x : A) → B x i0} {g : (x : A) → B x i1}
-          → (∀ x → B x [ f x ≡ g x ]) ≡ ((λ i → ∀ x → B x i) [ f ≡ g ])
-funExtPath = {!!}
-
 -- contr? A = ∃ \ (x : A) → ∀ y → x ≡ y
 
 
-rec2 : {B : Type ℓb}
-       (f : (x y z w : ℕ) → ℤ) (feq1 : (a⁺ a⁻ b⁺ b⁻ c⁺ c⁻ : ℕ) (a≡b : a⁺ + b⁻ ≡ b⁺ + a⁻) → f a⁺ a⁻ c⁺ c⁻ ≡ f b⁺ b⁻ c⁺ c⁻)
-                               (feqr : (a⁺ a⁻ b⁺ b⁻ c⁺ c⁻ : ℕ) (b≡c : b⁺ + c⁻ ≡ c⁺ + b⁻) → f a⁺ a⁻ b⁺ b⁻ ≡ f a⁺ a⁻ c⁺ c⁻)
-    → ℤ → ℤ → ℤ
-rec2 f feq1 feqr = {!!}
+ℤrec2 : {B : Type ℓb}
+       (f : (x⁺ x⁻ y⁺ y⁻ : ℕ) → ℤ)
+       (feq1 : (a⁺ a⁻ b⁺ b⁻ c⁺ c⁻ : ℕ)
+               (a≡b : a⁺ + b⁻ ≡ b⁺ + a⁻)
+            → f a⁺ a⁻ c⁺ c⁻ ≡ f b⁺ b⁻ c⁺ c⁻)
+       (feqr : (a⁺ a⁻ b⁺ b⁻ c⁺ c⁻ : ℕ)
+               (b≡c : b⁺ + c⁻ ≡ c⁺ + b⁻)
+            → f a⁺ a⁻ b⁺ b⁻ ≡ f a⁺ a⁻ c⁺ c⁻)
+    → _
+ℤrec2 f feql feqr = ℤrec (λ a⁺ a⁻ → ℤrec (f a⁺ a⁻) (feqr a⁺ a⁻) ?)
+                         {!!}
+   where
+     barb : (a⁺ a⁻ b⁺ b⁻ : ℕ) → (a≡b : a⁺ + b⁻ ≡ b⁺ + a⁻) → {!!}
+     barb a⁺ a⁻ b⁺ b⁻ c⁺ c⁻ a≡b = {!!} where
+        foob : {!!}
+        foob = ℤelim (λ _ → trunc {!!} {!!}) (λ c⁺ c⁻ → feql a⁺ a⁻ b⁺ b⁻ c⁺ c⁻ a≡b)
+
+-- {!rec (Set.Π (λ _ → trunc)) (λ a⁺ a⁻ → rec trunc (f a⁺ a⁻) (feqr a⁺ a⁻)) (λ a⁺ a⁻ b⁺ b⁻ r → fx≡gx→f≡g !}
        
 
 +rel : (a⁺ a⁻ b⁺ b⁻ x⁺ x⁻ y⁺ y⁻ : ℕ) → (a⁺ + b⁻ ≡ b⁺ + a⁻) → (x⁺ + y⁻ ≡ y⁺ + x⁻) → (a⁺ + x⁺) + (b⁻ + y⁻) ≡ (b⁺ + y⁺) + (a⁻ + x⁻)
@@ -73,87 +95,4 @@ rec2 f feq1 feqr = {!!}
       ≡⟨ (λ ∙ → a + ∙ + d) ⟨$⟩ +comm b c ⟩ a + (c + b) + d
       ≡⟨ sym ((λ ∙ → ∙ + d) ⟨$⟩ +assoc a c b ) ⟩ ((a + c) + b) + d
       ≡⟨ +assoc (a + c) b d ⟩ (a + c) + (b + d) ∎
-
--- _++_ : ℤ → ℤ → ℤ
--- [ a , b ] ++ [ x , y ] = [ a + x , b + y ]
--- ℤ≡ a⁺ a⁻ b⁺ b⁻ a≡b i ++ [ n⁺ , n⁻ ] = ℤ≡ (a⁺ + n⁺) (a⁻ + n⁻) (b⁺ + n⁺) (b⁻ + n⁻) (+rel a⁺ a⁻ b⁺ b⁻ n⁺ n⁻ n⁺ n⁻ a≡b ✓) i
--- [ n⁺ , n⁻ ] ++ ℤ≡ a⁺ a⁻ b⁺ b⁻ a≡b i = ℤ≡ (n⁺ + a⁺) (n⁻ + a⁻) (n⁺ + b⁺) (n⁻ + b⁻) (+rel n⁺ n⁻ n⁺ n⁻ a⁺ a⁻ b⁺ b⁻ ✓ a≡b) i
--- -- +rel : (a⁺ a⁻ b⁺ b⁻ x⁺ x⁻ y⁺ y⁻ : ℕ) → (a⁺ + b⁻ ≡ b⁺ + a⁻) → (x⁺ + y⁻ ≡ y⁺ + x⁻) → (a⁺ + x⁺) + (b⁻ + y⁻) ≡ (b⁺ + y⁺) + (a⁻ + x⁻)
--- -- ℤ≡ : (a⁺ a⁻ b⁺ b⁻ : ℕ) → (a⁺ + b⁻ ≡ b⁺ + a⁻) → [ a⁺ , a⁻ ] ≡ [ b⁺ , b⁻ ]
--- trunc a b p q i j ++ [ m , n ] = {!!} 
--- [ m , n ] ++ trunc a b p q i j = {!!}
--- trunc a b p q i j ++ trunc a' b' p' q' i' j' = {!!} 
-     
--- i = i0 ⊢ ℤ≡ (a + a') (b + b') (a + x') (b + y')
---          (Math.Magma.go2 a b a' b' x' y' q j) j
--- i = i1 ⊢ ℤ≡ (x + a') (y + b') (x + x') (y + y')
---          (Math.Magma.go2 x y a' b' x' y' q j) j
--- j = i0 ⊢ ℤ≡ (a + a') (b + b') (x + a') (y + b')
---          (Math.Magma.go1 a b x y p i a' b') i
--- j = i1 ⊢ ℤ≡ (a + x') (b + y') (x + x') (y + y')
---          (Math.Magma.go1 a b x y p i x' y') i
-
-
-
-  
-module _ where
-  open group?
-  -- ℤgroup : group? ℤ _+_
-  -- ℤgroup = ?
-
-data Z : Type₀ where
-  _⊝_ : ℕ → ℕ → Z
-  cancel : ∀ x y → x ⊝ y ≡ s x ⊝ s y
-
-infixl 6 _⊝_
-
-question : ∀ x y i → cancel x y i ≡ cancel (s x) (s y) i
-question x y i j =
-  hcomp (λ k → λ{ (i = i0) → cancel x y j
-                ; (i = i1) → cancel (s x) (s y) (j ∧ k)
-                ; (j = i0) → cancel x y i
-                ; (j = i1) → cancel (s x) (s y) (i ∧ k) })
-        (cancel x y (i ∨ j))
--- (a + s b ≡ s a + b)
-  -- ℤ≡ : (a b x y : ℕ) → (a + y ≡ x + b) → [ a , b ] ≡ [ x , y ]
--- q2 : ∀ a a' b b' x x' y y' p q i → ℤ≡ a b x y p i ≡ ℤ≡ (a + a') (b + b') (x + x') (y + y') q i
--- q2 a a' b b' x x' y y' p q i j = hcomp (λ k → λ { (i = i0) → ℤ≡ a b x y p j
---                                                 ; (i = i1) → ℤ≡ (a + a') (b + b') (x + x') (y + y') q (j ∧ k)
---                                                 ; (j = i0) → ℤ≡ a b x y p i
---                                                 ; (j = i1) → {!!}})
---                                        (ℤ≡ a b x y p (i ∨ j))
-
-  -- ℤ≡ : (a b x y : ℕ) → (a + y ≡ x + b) → [ a , b ] ≡ [ x , y ]
-
-cong₂ : ∀ {ℓ ℓ'} {A : Type ℓ} {B : (x : A) → Type ℓ'} {x y} {C : (a : A) → (b : B a) → Type ℓ} →
-        (f : (a : A) → (b : B a) → C a b) →
-        (p : x ≡ y) →
-        {u : B x} {v : B y} (q : (λ i → B (p i)) [ u ≡ v ] ) →
-        (λ i → C (p i) (q i)) [ f x u ≡ f y v ]
-cong₂ f p q i = f (p i) (q i)
-
-lem₂ : ∀ a b c d i →
-  cancel (a + s b) (c + s d) i ≡
-  cancel (s a + b) (s c + d) i
-lem₂ a b c d i j = cancel (+s a b j) (+s c d j) i
-
-lem₁ : ∀ a b c d i → cancel (a + b) (c + d) i ≡ cancel (a + s b) (c + s d) i
-lem₁ a b c d i = question (a + b) (c + d) i ∙ sym (lem₂ a b c d i)
-
-_+ᶻ_ : Z → Z → Z
-(x ⊝ x₁) +ᶻ (x₂ ⊝ x₃) = (x + x₂) ⊝ (x₁ + x₃)
-cancel a c i +ᶻ (b ⊝ d) = lem₁ a b c d i i0
-(a ⊝ c) +ᶻ cancel b d j = lem₁ a b c d i0 j
-cancel a c i +ᶻ cancel b d j = lem₁ a b c d i j
-
-infixl 6 _+ᶻ_
-
--- lem₃ : ∀ a b c d i j → lem₁ a b c d i j ≡ lem₁ b a d c j i
--- lem₃ a b c d i j k = {!!}
-
--- +ᶻ-comm : ∀ x y → x +ᶻ y ≡ y +ᶻ x
--- +ᶻ-comm (a ⊝ c) (b ⊝ d) = cong₂ _⊝_ (+comm a b) (+comm c d )
--- +ᶻ-comm (a ⊝ c) (cancel b d j) = lem₃ a b c d i0 j
--- +ᶻ-comm (cancel a c i) (b ⊝ d) = lem₃ a b c d i i0
--- +ᶻ-comm (cancel a c i) (cancel b d j) = lem₃ a b c d i j
 
