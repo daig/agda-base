@@ -17,13 +17,17 @@ _ℚ~_ : Q → Q → Type
 ℚ : Type
 ℚ = Q / _ℚ~_
 
--- swap-middle = λ (a x y b : ℤ) →
---     a * x *(y * b) ≡⟨ sym (*assoc (a * x) y b)    ⟩
---     a * x * y * b  ≡[ i ]⟨ *assoc a x y i * b ⟩
---     a *(x * y)* b  ≡[ i ]⟨ a * *comm x y i * b    ⟩
---     a *(y * x)* b  ≡[ i ]⟨ *assoc a y x (~ i) * b     ⟩
---     a * y * x * b  ≡⟨ *assoc (a * y) x b    ⟩
---     a * y *(x * b) ∎
+-- *swap-middle : ∀ a x y b → (a * x) * (y * b) ≡ (a * y) * (x * b)
+-- *swap-middle a x y b =
+--   (a * x) * ( y * b) ≡[ i ]⟨ *assoc (a * x) y b (~ i) ⟩
+--   ?
+--   ≡⟨ {!!} ⟩ (a * y) * (x * b) ∎
+    -- (a * x) * (y * b) ≡⟨ sym (*assoc (a * x) y b)    ⟩
+    -- ((a * x) * y) * b  ≡[ i ]⟨ *assoc a x y i * b ⟩
+    -- (a * (x * y)) * b  ≡[ i ]⟨ a * *comm x y i * b    ⟩
+    -- (a * (y * x))* b  ≡[ i ]⟨ *assoc a y x (~ i) * b     ⟩
+    -- ((a * y) * x) * b  ≡⟨ *assoc (a * y) x b    ⟩
+    -- (a * y) * (x * b) ∎
 
 -- -- module Int where
 --   𝕫 = ℕ × ℕ
