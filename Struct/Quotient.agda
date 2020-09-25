@@ -17,6 +17,7 @@ private
     _∼_ : A → A → Type ℓ
     B∼ : A / _∼_ → Type ℓ
     C∼ : A / _∼_ → A / _∼_ → Type ℓ
+    D∼ : A / _∼_ → A / _∼_ → A / _∼_ → Type ℓ
 
 module ≡ where
     elim : {A : Type ℓa} {B : A → Type ℓb}
@@ -45,6 +46,11 @@ module Quotient where
           → ( x y : A / _∼_) → C∼   x     y
     elim2 Cprop f = elim (λ x → HProp.Π (Cprop x))
                          (λ x → elim (Cprop ⟦ x ⟧) (f x))
+    elim3 : ((x y z : A / _∼_ ) → prop? (D∼ x y z))
+          → ((a b c : A      ) → D∼ ⟦ a ⟧ ⟦ b ⟧ ⟦ c ⟧)
+          → ( x y z : A / _∼_) → D∼   x     y     z
+    elim3 Dprop f = elim2 (λ x y → HProp.Π (Dprop x y) )
+                          λ x y → elim (Dprop ⟦ x ⟧ ⟦ y ⟧) (f x y)
 
   rec : (Bset : set? B)
         (f : A → B)
@@ -116,8 +122,11 @@ module Int where
   +assoc : (a b c : ℤ) → (a + b) + c ≡ a + (b + c)
   +assoc a b c = {!!}
   -- +assoc (s a) b c =  s ⟨$⟩ (+assoc a b c)
-  -- +0 : (a : ℤ) → a + ⟦ 0 , 0 ⟧ ≡ a
-  -- +0 n = {!!}
+  +0 : (a : ℤ) → a + zero ≡ a
+  +0 n =
+    n + ⟦ 0 , 0 ⟧ ≡⟨⟩
+    {!!}
+    ≡⟨ {!!} ⟩ n ∎
   -- -- +0 (s a) = s ⟨$⟩ +0 a
   -- +s : (a b : ℕ) → a + s b ≡ s (a + b)
   -- +s 0 b = ✓
