@@ -7,10 +7,10 @@ open import Sigma
 open import Int
 
 
-record Cat : Set (ℓs (ℓ ⊔ ℓ')) where
+record Cat ℓ ℓ' : Type (ℓs (ℓ ⊔ ℓ')) where
   field
-    Obj : Set ℓ
-    Hom : Obj → Obj → Set ℓ'
+    Obj : Type ℓ
+    Hom : Obj → Obj → Type ℓ'
   private _⇒_ = Hom
   field
     id : {x : Obj} → x ⇒ x

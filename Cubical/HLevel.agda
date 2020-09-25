@@ -25,11 +25,11 @@ h?′ {A = A} (s (s n)) B′ = {a₀ a₁ : A} (b₀ : B′ a₀) (b₁ : B′ a
 
 module _ {⊢A : I → Type ℓ} {x : ⊢A i0} {y : ⊢A i1} where
     open import Iso
-    transp→≡ : transp ⊢A i0 x ≡ y → ⊢A [ x ≡ y ]
+    transp→≡ : transp (λ i → ⊢A i) i0 x ≡ y → ⊢A [ x ≡ y ]
     transp→≡ p i = hcomp (λ {j (i = i0) → x
                        ;j (i = i1) → p j})
                     (transp (λ j → ⊢A (i ∧ j)) (~ i) x)
-    ≡→transp : ⊢A [ x ≡ y ] → transp ⊢A i0 x ≡ y
+    ≡→transp : ⊢A [ x ≡ y ] → transp (λ i → ⊢A i) i0 x ≡ y
     ≡→transp x≡y i = transp (λ j → ⊢A (i ∨ j)) i (x≡y i)
     -- ⊢≅≡ : (transp ⊢A i0 x ≡ y) ≅ (⊢A [ x ≡ y ])
     -- ⊢≅≡ = iso ⊢→≡ ≡→⊢ {!!} {!!} where
@@ -116,7 +116,7 @@ module HSet where
 ⊢prop→≡ : ((i : I) → prop? (⊢B i))
        → (b0 : ⊢B i0) (b1 : ⊢B i1)
        → ⊢B [ b0 ≡ b1 ]
-⊢prop→≡ {⊢B = ⊢B} ⊢h b0 b1 = transp→≡ (⊢h i1 (transp ⊢B i0 b0) b1)
+⊢prop→≡ {⊢B = ⊢B} ⊢h b0 b1 = transp→≡ (⊢h i1 (transp (λ i → ⊢B i) i0 b0) b1)
                     
 
 h?→h?′ : (n : ℕ) (h : (a : A) → h? n (B′ a)) → h?′ {A = A} n B′
