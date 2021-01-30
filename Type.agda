@@ -22,12 +22,3 @@ infixl 6 _⊔_
 
 variable
     ℓ ℓ' ℓa ℓb ℓc ℓd ℓe ℓf ℓh : Level
-    A : Type ℓa
-    B : Type ℓb
-    B′ : A → Type ℓb
-    C : Type ℓc
-    C′ : (x : A) → B′ x → Type ℓc
-    D : Type ℓd
-    D′ : (x : A) → (y : B′ x) → C′ x y → Type ℓd
-    E : Type ℓe
-    E′ : (x : A) → (y : B′ x) → (z : C′ x y) → D′ x y z → Type ℓe

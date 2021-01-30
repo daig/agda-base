@@ -59,7 +59,7 @@ module Reasoning where
     open import Eq
     +assoc : (a b c : ℤ) → (a + b) + c ≡ a + (b + c)
     +assoc (pos 0) (pos b) (pos c) = ✓
-    +assoc (pos (s a)) (pos b) (pos c) = ?
+    +assoc (pos (s a)) (pos b) (pos c) = {!!}
 
 --     +assoc (s a) b c =  s ⟨$⟩ (+assoc a b c)
     -- +0 : (a : ℕ) → a + 0 ≡ a

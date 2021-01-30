@@ -10,6 +10,15 @@ open import Agda.Primitive.Cubical public renaming
     ;primComp to comp ;primTransp to transp ;primHComp to hcomp 
     ;Partial to [_⊢_] ; PartialP to [_⊩_])
 variable
+    A : Type ℓa
+    B : Type ℓb
+    B′ : A → Type ℓb
+    C : Type ℓc
+    C′ : (x : A) → B′ x → Type ℓc
+    D : Type ℓd
+    D′ : (x : A) → (y : B′ x) → C′ x y → Type ℓd
+    E : Type ℓe
+    E′ : (x : A) → (y : B′ x) → (z : C′ x y) → D′ x y z → Type ℓe
     ℓ′ : I → Level
     φ ψ : I
     ⊢A : I → Type ℓa
